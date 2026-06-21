@@ -25,7 +25,8 @@ export default function LeadForm({
     const data = Object.fromEntries(new FormData(form).entries());
 
     try {
-      const res = await fetch("/api/lead", {
+      const endpoint = process.env.NEXT_PUBLIC_LEAD_ENDPOINT || "/api/lead";
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

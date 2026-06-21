@@ -2,6 +2,7 @@
 /.next
 /out
 /build
+/.api-tmp
 .DS_Store
 *.pem
 
