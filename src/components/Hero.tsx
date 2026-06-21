@@ -215,8 +215,8 @@ export default function Hero() {
         <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-ink-950/85 to-transparent" />
         {/* лево — под HUD-бейджи */}
         <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-ink-950/85 via-ink-950/25 to-transparent" />
-        {/* право — под главную панель (на ПК) */}
-        <div className="absolute inset-y-0 right-0 hidden w-2/3 bg-gradient-to-l from-ink-950/90 via-ink-950/30 to-transparent lg:block" />
+        {/* право — мягкая посадка главного оффера на сцену (на ПК, без панели) */}
+        <div className="absolute inset-y-0 right-0 hidden w-[72%] bg-gradient-to-l from-ink-950/92 via-ink-950/45 to-transparent lg:block" />
         {/* мобильное общее затемнение — текст не глушится картинкой */}
         <div className="absolute inset-0 bg-ink-950/50 lg:bg-transparent" />
         {/* техно-сетка + неоновое свечение бренда */}
@@ -227,7 +227,7 @@ export default function Hero() {
       {/* ── Контент: flow на мобиле, зоны на ПК ───────────────────── */}
       <div className="container-x relative z-10 flex min-h-[100svh] flex-col justify-center gap-9 py-28 lg:block lg:py-0">
         {/* ГЛАВНЫЙ ОФФЕР — один экземпляр: мобиле в потоке, на ПК справа */}
-        <div className="max-w-xl lg:absolute lg:right-0 lg:top-1/2 lg:w-[44%] lg:max-w-lg lg:-translate-y-1/2 lg:rounded-2xl lg:border lg:border-white/10 lg:bg-ink-950/55 lg:p-8 lg:shadow-card lg:backdrop-blur-md">
+        <div className="max-w-xl lg:absolute lg:right-0 lg:top-1/2 lg:w-[46%] lg:max-w-lg lg:-translate-y-1/2">
           <span className="eyebrow animate-fade-up">
             <BoltIcon className="h-3.5 w-3.5" />
             Китайские авто · электромобили · все марки
@@ -254,19 +254,19 @@ export default function Hero() {
             className="mt-7 flex flex-wrap gap-3 animate-fade-up"
             style={{ animationDelay: "180ms" }}
           >
-            <a href={company.phoneHref} className="btn-primary text-base">
-              <PhoneIcon className="h-[18px] w-[18px]" />
+            <a href={company.phoneHref} className="btn-primary px-6 py-3.5 text-base">
+              <PhoneIcon className="h-5 w-5" />
               Позвонить
             </a>
-            <a href="#zayavka" className="btn-accent text-base">
+            <a href="#zayavka" className="btn-accent px-6 py-3.5 text-base">
               Оставить заявку
-              <ArrowRightIcon className="h-[18px] w-[18px]" />
+              <ArrowRightIcon className="h-5 w-5" />
             </a>
             <a
               href={company.telegram}
               target="_blank"
               rel="noopener"
-              className="btn-ghost text-base"
+              className="btn-ghost px-6 py-3.5 text-base"
             >
               <TelegramIcon className="h-[18px] w-[18px]" />
               Telegram
