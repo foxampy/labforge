@@ -20,7 +20,7 @@ export const company = {
   phoneHref: "tel:1234567890",
   email: "info@livada-center.by",
   whatsapp: "https://wa.me/1234567890",
-  telegram: "https://t.me/levadacenter",
+  telegram: "https://t.me/LevadaService_bot",
 
   // --- АДРЕС / GEO ---
   address: {

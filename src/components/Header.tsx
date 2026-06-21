@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { company } from "@/data/company";
 import { mainNav, serviceGroups, brandGroups } from "@/data/nav";
 import SiteSearch from "./SiteSearch";
+import TelegramIcon from "./TelegramIcon";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -42,26 +43,92 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Десктоп-навигация */}
-        <nav className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setOpenMega(null)}>
-          {mainNav.map((item) => (
-            <div
-              key={item.href}
-              className="relative"
-              onMouseEnter={() => setOpenMega(item.mega ?? null)}
-            >
-              <Link
-                href={item.href}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  pathname === item.href ? "text-white" : "text-slate-300 hover:text-white"
-                }`}
-              >
-                {item.label}
-                {item.mega && <span className="ml-1 text-xs text-slate-500">▾</span>}
-              </Link>
+        {/* Десктоп-навигация + мега-меню в единой hover-зоне (без «провала» курсора) */}
+        <div
+          className="hidden h-16 items-center lg:flex"
+          onMouseLeave={() => setOpenMega(null)}
+        >
+          <nav className="flex items-center gap-1">
+            {mainNav.map((item) => (
+              <div key={item.href} onMouseEnter={() => setOpenMega(item.mega ?? null)}>
+                <Link
+                  href={item.href}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    pathname === item.href ? "text-white" : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                  {item.mega && <span className="ml-1 text-xs text-slate-500">▾</span>}
+                </Link>
+              </div>
+            ))}
+          </nav>
+
+          {/* Выпадающее мега-меню (матовая подложка) */}
+          {openMega && (
+            <div className="absolute inset-x-0 top-16 hidden lg:block">
+              <div className="container-x">
+                <div className="rounded-2xl border border-white/10 bg-ink-900 p-6 shadow-card">
+                  {openMega === "services" ? (
+                    <div className="grid grid-cols-3 gap-6">
+                      {serviceGroups.map((g) => (
+                        <div key={g.title}>
+                          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand-300">
+                            {g.title}
+                          </p>
+                          <ul className="space-y-1">
+                            {g.items.map((s) => (
+                              <li key={s.slug}>
+                                <Link
+                                  href={`/uslugi/${s.slug}`}
+                                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+                                >
+                                  <span className="text-base">{s.icon}</span>
+                                  {s.title}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                      <div className="col-span-3 mt-2 border-t border-white/10 pt-3">
+                        <Link href="/uslugi" className="text-sm font-semibold text-brand-300 hover:text-brand-200">
+                          Все услуги и прайс →
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-6">
+                      {brandGroups.map((g) => (
+                        <div key={g.title}>
+                          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand-300">
+                            {g.title}
+                          </p>
+                          <div className="grid grid-cols-2 gap-1">
+                            {g.items.map((b) => (
+                              <Link
+                                key={b.slug}
+                                href={`/marki/${b.slug}`}
+                                className="rounded-lg px-2 py-1.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+                              >
+                                {b.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <div className="col-span-2 mt-2 border-t border-white/10 pt-3">
+                        <Link href="/marki" className="text-sm font-semibold text-brand-300 hover:text-brand-200">
+                          Все марки авто →
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          ))}
-        </nav>
+          )}
+        </div>
 
         {/* Правый блок */}
         <div className="hidden items-center gap-3 lg:flex">
@@ -87,75 +154,6 @@ export default function Header() {
           </span>
         </button>
       </div>
-
-      {/* Мега-меню (десктоп) */}
-      {openMega && (
-        <div
-          className="absolute inset-x-0 top-16 hidden lg:block"
-          onMouseEnter={() => setOpenMega(openMega)}
-          onMouseLeave={() => setOpenMega(null)}
-        >
-          <div className="container-x">
-            <div className="glass rounded-2xl p-6 shadow-card">
-              {openMega === "services" ? (
-                <div className="grid grid-cols-3 gap-6">
-                  {serviceGroups.map((g) => (
-                    <div key={g.title}>
-                      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand-300">
-                        {g.title}
-                      </p>
-                      <ul className="space-y-1">
-                        {g.items.map((s) => (
-                          <li key={s.slug}>
-                            <Link
-                              href={`/uslugi/${s.slug}`}
-                              className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
-                            >
-                              <span className="text-base">{s.icon}</span>
-                              {s.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                  <div className="col-span-3 mt-2 border-t border-white/10 pt-3">
-                    <Link href="/uslugi" className="text-sm font-semibold text-brand-300 hover:text-brand-200">
-                      Все услуги и прайс →
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-6">
-                  {brandGroups.map((g) => (
-                    <div key={g.title}>
-                      <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-brand-300">
-                        {g.title}
-                      </p>
-                      <div className="grid grid-cols-2 gap-1">
-                        {g.items.map((b) => (
-                          <Link
-                            key={b.slug}
-                            href={`/marki/${b.slug}`}
-                            className="rounded-lg px-2 py-1.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
-                          >
-                            {b.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                  <div className="col-span-2 mt-2 border-t border-white/10 pt-3">
-                    <Link href="/marki" className="text-sm font-semibold text-brand-300 hover:text-brand-200">
-                      Все марки авто →
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Мобильное меню */}
       {mobileOpen && (
@@ -211,6 +209,7 @@ export default function Header() {
                 Позвонить {company.phone}
               </a>
               <a href={company.telegram} target="_blank" rel="noopener" className="btn-ghost w-full">
+                <TelegramIcon className="h-4 w-4" />
                 Написать в Telegram
               </a>
             </div>

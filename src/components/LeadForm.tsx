@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { services } from "@/data/services";
 import { company } from "@/data/company";
+import TelegramIcon from "./TelegramIcon";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -138,7 +139,10 @@ export default function LeadForm({
         <span>Или сразу:</span>
         <a href={company.phoneHref} className="text-brand-300 hover:text-brand-200">Позвонить</a>
         <span>·</span>
-        <a href={company.telegram} target="_blank" rel="noopener" className="text-brand-300 hover:text-brand-200">Telegram</a>
+        <a href={company.telegram} target="_blank" rel="noopener" className="inline-flex items-center gap-1 text-brand-300 hover:text-brand-200">
+          <TelegramIcon className="h-3.5 w-3.5" />
+          Telegram
+        </a>
       </div>
       <p className="mt-3 text-center text-[11px] leading-relaxed text-slate-600">
         Нажимая «Отправить», вы соглашаетесь на обработку персональных данных.

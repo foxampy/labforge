@@ -2,6 +2,7 @@ import Link from "next/link";
 import { company } from "@/data/company";
 import { services } from "@/data/services";
 import { brands } from "@/data/brands";
+import TelegramIcon from "./TelegramIcon";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -31,7 +32,10 @@ export default function Footer() {
             </p>
           </address>
           <div className="mt-4 flex gap-2">
-            <a href={company.telegram} target="_blank" rel="noopener" className="chip hover:text-white">Telegram</a>
+            <a href={company.telegram} target="_blank" rel="noopener" className="chip hover:text-white">
+              <TelegramIcon className="h-3.5 w-3.5" />
+              Telegram
+            </a>
             <a href={company.whatsapp} target="_blank" rel="noopener" className="chip hover:text-white">WhatsApp</a>
           </div>
         </div>
