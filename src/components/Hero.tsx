@@ -6,7 +6,7 @@ import TelegramIcon from "./TelegramIcon";
 
 /* ------------------------------------------------------------------ */
 /*  Иконки в едином стиле бренда (линейные, currentColor).            */
-/*  Logo Telegram — отдельный залитый глиф (TelegramIcon).            */
+/*  Логотип Telegram — отдельный залитый глиф (TelegramIcon).         */
 /* ------------------------------------------------------------------ */
 
 type IconProps = { className?: string };
@@ -61,16 +61,17 @@ function BoltIcon({ className = "h-4 w-4" }: IconProps) {
   );
 }
 
-function ChevronDownIcon({ className = "h-4 w-4" }: IconProps) {
+function TagIcon({ className = "h-4 w-4" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className={className} {...stroke}>
-      <path d="M6 9l6 6 6-6" />
+      <path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z" />
+      <path d="M7.5 7.5h.01" />
     </svg>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Счётчик с анимацией (уважает prefers-reduced-motion).            */
+/*  Данные.                                                          */
 /* ------------------------------------------------------------------ */
 
 const stats = [
@@ -79,6 +80,16 @@ const stats = [
   { value: 2, suffix: " года", label: "гарантия" },
   { value: 14, suffix: "+", label: "марок авто" },
 ];
+
+const usps = [
+  { Icon: BoltIcon, title: "Китайские авто и EV", note: "профильные спецы" },
+  { Icon: ShieldCheckIcon, title: "Гарантия на работы", note: "письменно" },
+  { Icon: TagIcon, title: "Честные цены", note: "расчёт до работ" },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Счётчик с анимацией (запуск при появлении, reduced-motion safe).  */
+/* ------------------------------------------------------------------ */
 
 function CountUp({ value, suffix = "" }: { value: number; suffix?: string }) {
   const [n, setN] = useState(0);
@@ -108,7 +119,6 @@ function CountUp({ value, suffix = "" }: { value: number; suffix?: string }) {
       raf = requestAnimationFrame(tick);
     };
 
-    // запускаем счётчик, когда блок попадает во вьюпорт
     const io = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !started) {
@@ -136,7 +146,9 @@ function CountUp({ value, suffix = "" }: { value: number; suffix?: string }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Hero: кинематографичный фон hero.png + наш UX/UI поверх.          */
+/*  Hero: контент интегрирован в сцену hero.png.                      */
+/*  Mobile-first — на мобиле один столбец; на ПК зоны:               */
+/*  главное справа, доп-инфо слева, статы снизу.                     */
 /* ------------------------------------------------------------------ */
 
 export default function Hero() {
@@ -182,44 +194,47 @@ export default function Hero() {
   return (
     <section
       ref={sceneRef}
-      className="relative isolate flex min-h-[92vh] items-center overflow-hidden"
+      className="relative isolate min-h-[100svh] overflow-hidden"
     >
-      {/* ── Фоновое изображение (кинематографичный гараж) ───────────── */}
-      <div data-depth="-0.12" className="absolute inset-0 -z-20">
+      {/* ── Фоновая сцена ──────────────────────────────────────────── */}
+      <div data-depth="-0.1" className="absolute inset-0 -z-20">
         <img
           src="/hero.png"
-          alt="Сервисный бокс LEVADA CENTER: диагностика и ремонт автомобилей в неоновом свете"
-          className="h-full w-full scale-[1.12] object-cover object-[center_42%]"
+          alt="Сервисный бокс LEVADA CENTER: X-ray диагностика и ремонт автомобилей в неоновом свете"
+          className="h-full w-full scale-[1.1] object-cover object-[center_34%]"
           fetchPriority="high"
           decoding="async"
         />
       </div>
 
-      {/* ── Скримы для читаемости текста поверх насыщенной картинки ── */}
+      {/* ── Скримы под читаемость (зоны: низ, верх, лево, право) ───── */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        {/* слева → направо: затемняем зону под текст */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink-950 via-ink-950/85 to-transparent" />
-        {/* снизу вверх: посадка на тёмную базу страницы */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/55 to-transparent" />
-        {/* сверху: подложка под прозрачный хедер */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink-950/85 to-transparent" />
-        {/* на мобильных усиливаем общий скрим (картинка не глушит текст) */}
-        <div className="absolute inset-0 bg-ink-950/45 sm:bg-ink-950/20 lg:bg-transparent" />
+        {/* низ — посадка на тёмную базу + место под статы */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/55 to-ink-950/5" />
+        {/* верх — подложка под прозрачный хедер с меню над авто */}
+        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-ink-950/85 to-transparent" />
+        {/* лево — под HUD-бейджи */}
+        <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-ink-950/85 via-ink-950/25 to-transparent" />
+        {/* право — под главную панель (на ПК) */}
+        <div className="absolute inset-y-0 right-0 hidden w-2/3 bg-gradient-to-l from-ink-950/90 via-ink-950/30 to-transparent lg:block" />
+        {/* мобильное общее затемнение — текст не глушится картинкой */}
+        <div className="absolute inset-0 bg-ink-950/50 lg:bg-transparent" />
         {/* техно-сетка + неоновое свечение бренда */}
-        <div className="absolute inset-0 bg-tech-grid opacity-[0.18]" />
-        <div className="absolute -left-32 top-1/3 h-[420px] w-[620px] rounded-full bg-brand-500/20 blur-[130px]" />
+        <div className="absolute inset-0 bg-tech-grid opacity-[0.14]" />
+        <div className="absolute right-[6%] top-1/3 hidden h-[360px] w-[460px] rounded-full bg-brand-500/15 blur-[130px] lg:block" />
       </div>
 
-      {/* ── Контент ──────────────────────────────────────────────── */}
-      <div className="container-x relative py-28 sm:py-32">
-        <div className="max-w-2xl">
+      {/* ── Контент: flow на мобиле, зоны на ПК ───────────────────── */}
+      <div className="container-x relative z-10 flex min-h-[100svh] flex-col justify-center gap-9 py-28 lg:block lg:py-0">
+        {/* ГЛАВНЫЙ ОФФЕР — один экземпляр: мобиле в потоке, на ПК справа */}
+        <div className="max-w-xl lg:absolute lg:right-0 lg:top-1/2 lg:w-[44%] lg:max-w-lg lg:-translate-y-1/2 lg:rounded-2xl lg:border lg:border-white/10 lg:bg-ink-950/55 lg:p-8 lg:shadow-card lg:backdrop-blur-md">
           <span className="eyebrow animate-fade-up">
             <BoltIcon className="h-3.5 w-3.5" />
             Китайские авто · электромобили · все марки
           </span>
 
           <h1
-            className="mt-5 text-4xl font-extrabold leading-[1.05] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.55)] sm:text-5xl lg:text-6xl animate-fade-up"
+            className="mt-5 text-4xl font-extrabold leading-[1.05] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)] sm:text-5xl lg:text-4xl xl:text-5xl animate-fade-up"
             style={{ animationDelay: "60ms" }}
           >
             Ремонт авто, которому
@@ -227,16 +242,16 @@ export default function Hero() {
           </h1>
 
           <p
-            className="mt-5 max-w-xl text-lg leading-relaxed text-slate-200 drop-shadow-[0_1px_12px_rgba(0,0,0,0.5)] animate-fade-up"
+            className="mt-5 text-lg leading-relaxed text-slate-200 drop-shadow-[0_1px_12px_rgba(0,0,0,0.55)] lg:text-base xl:text-lg animate-fade-up"
             style={{ animationDelay: "120ms" }}
           >
-            Диагностика, ремонт и обслуживание в {company.address.city}. Честные цены,
-            гарантия до 2 лет и точный расчёт стоимости до начала работ.
+            Диагностика, ремонт и обслуживание авто в Минске. Честные
+            цены, гарантия до 2 лет и точный расчёт стоимости до начала работ.
           </p>
 
           {/* Воронка: 3 пути конверсии */}
           <div
-            className="mt-8 flex flex-wrap gap-3 animate-fade-up"
+            className="mt-7 flex flex-wrap gap-3 animate-fade-up"
             style={{ animationDelay: "180ms" }}
           >
             <a href={company.phoneHref} className="btn-primary text-base">
@@ -268,60 +283,44 @@ export default function Hero() {
             </span>
             Перезваниваем за 15 минут · работаем {company.openingHours[0].time}
           </p>
+        </div>
 
-          {/* Статы с анимированными счётчиками */}
-          <dl
-            className="mt-10 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4 animate-fade-up"
-            style={{ animationDelay: "280ms" }}
-          >
-            {stats.map((s) => (
-              <div key={s.label} className="glass rounded-xl px-4 py-3">
-                <dt className="text-2xl font-extrabold text-white">
-                  <CountUp value={s.value} suffix={s.suffix} />
-                </dt>
-                <dd className="mt-0.5 text-xs text-slate-400">{s.label}</dd>
+        {/* ДОП-ИНФО СЛЕВА — HUD-бейджи (только ПК) */}
+        <div
+          data-depth="0.5"
+          className="hidden lg:absolute lg:left-0 lg:top-1/2 lg:block lg:w-60 lg:-translate-y-1/2 lg:space-y-3"
+        >
+          {usps.map(({ Icon, title, note }) => (
+            <div
+              key={title}
+              className="glass flex items-center gap-3 rounded-xl px-4 py-3"
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-500/20 text-brand-300">
+                <Icon className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-white">{title}</p>
+                <p className="truncate text-xs text-slate-400">{note}</p>
               </div>
-            ))}
-          </dl>
+            </div>
+          ))}
         </div>
 
-        {/* Плавающие бейджи поверх машины (десктоп, с параллаксом) */}
-        <div
-          data-depth="0.55"
-          className="glass pointer-events-none absolute right-[6%] top-[22%] hidden items-center gap-3 rounded-2xl px-4 py-3 lg:flex"
-        >
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-500/20 text-brand-300">
-            <ShieldCheckIcon className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-[11px] uppercase tracking-wider text-slate-400">Гарантия</p>
-            <p className="text-base font-bold text-white">до 2 лет</p>
-          </div>
-        </div>
-
-        <div
-          data-depth="0.8"
-          className="glass pointer-events-none absolute bottom-[16%] right-[14%] hidden items-center gap-3 rounded-2xl px-4 py-3 lg:flex"
-        >
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent-500/20 text-accent-400">
-            <ClockIcon className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-[11px] uppercase tracking-wider text-slate-400">Диагностика</p>
-            <p className="text-base font-bold text-white">30 минут</p>
-          </div>
-        </div>
+        {/* СТАТЫ СНИЗУ — на полу сцены (на ПК — нижняя строка) */}
+        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:absolute lg:inset-x-0 lg:bottom-7 lg:flex lg:gap-3">
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              className="glass rounded-xl px-4 py-3 lg:flex-1"
+            >
+              <dt className="text-2xl font-extrabold text-white">
+                <CountUp value={s.value} suffix={s.suffix} />
+              </dt>
+              <dd className="mt-0.5 text-xs text-slate-400">{s.label}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-
-      {/* Индикатор скролла */}
-      <a
-        href="#zayavka"
-        aria-label="Прокрутить вниз к форме заявки"
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-slate-400 transition-colors hover:text-white sm:flex"
-      >
-        <span className="text-[11px] uppercase tracking-widest">Листайте</span>
-        <ChevronDownIcon className="h-5 w-5 animate-floaty" />
-      </a>
     </section>
   );
 }
