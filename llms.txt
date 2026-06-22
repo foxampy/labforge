@@ -1,0 +1,85 @@
+# LEVADA SERVICE
+
+Автосервис в Минске со специализацией на китайских автомобилях и электромобилях, работает с 2014 года.
+
+## Кратко о компании
+
+LEVADA SERVICE — профессиональный автосервис в Минске. Специализация: китайские авто (Geely, Chery, Haval, Changan и др.) и электромобили (Li Auto, Zeekr, BYD, Tesla, Voyah и др.), при этом обслуживаются все марки. Услуги: слесарный ремонт, компьютерная диагностика, ТО, развал-схождение 3D, ремонт ходовой и тормозов, чип-тюнинг, русификация китайских авто, антикоррозийная обработка. Честные цены с расчётом до начала работ, письменная гарантия на работы и запчасти.
+
+## Контакты
+
+- Адрес: ул. Нововиленская, 48, корпус 2 (ЖК «Левада»), Минск, Беларусь
+- Телефон: +375 (12) 345-67-89
+- E-mail: info@livada-center.by
+- Telegram: https://t.me/LevadaService_bot
+- Сайт: https://livada-center.by
+- Год основания: 2014
+- Режим работы: Пн–Пт 9:00–21:00; Сб 9:00–19:00; Вс 10:00–18:00
+
+## Услуги
+
+- [Диагностика авто](https://livada-center.by/uslugi/diagnostika): поиск неисправностей по всем системам авто на дилерском оборудовании.
+- [ТО и замена масла](https://livada-center.by/uslugi/to-zamena-masla): регламентное обслуживание, замена масел, фильтров, свечей и ГРМ.
+- [Развал-схождение 3D](https://livada-center.by/uslugi/razval-shozhdenie): точная регулировка углов установки колёс на 3D-стенде.
+- [Ремонт подвески](https://livada-center.by/uslugi/remont-podveski): амортизаторы, рычаги, шаровые, ШРУСы, сайлентблоки, ступицы.
+- [Тормозная система](https://livada-center.by/uslugi/tormoznaya-sistema): колодки, диски, суппорты, цилиндры, проточка, тормозная жидкость.
+- [Рулевое управление](https://livada-center.by/uslugi/rulevoe-upravlenie): рулевая рейка, наконечники, тяги, гидроусилитель, крестовины.
+- [Ремонт глушителя](https://livada-center.by/uslugi/remont-glushitelya): сварка, замена гофры и катализатора, прокладки, пламегаситель.
+- [Чип-тюнинг](https://livada-center.by/uslugi/chip-tyuning): прошивка ЭБУ, мощность, удаление сажевого, EGR, AdBlue, Start/Stop.
+- [Русификация китайских авто](https://livada-center.by/uslugi/rusifikaciya): перевод меню, приложения, телематика, мастер-аккаунт для авто из Китая.
+- [Антикоррозийная обработка](https://livada-center.by/uslugi/antikor): защита днища, арок и скрытых полостей от коррозии.
+- [Озонирование салона](https://livada-center.by/uslugi/ozonirovanie): устранение запахов и дезинфекция салона озоном.
+
+## Марки
+
+- [Geely](https://livada-center.by/marki/geely)
+- [Belgee](https://livada-center.by/marki/belgee)
+- [Haval](https://livada-center.by/marki/haval)
+- [Chery](https://livada-center.by/marki/chery)
+- [Omoda](https://livada-center.by/marki/omoda)
+- [Jaecoo](https://livada-center.by/marki/jaecoo)
+- [Exeed](https://livada-center.by/marki/exeed)
+- [Changan](https://livada-center.by/marki/changan)
+- [Jetour](https://livada-center.by/marki/jetour)
+- [GAC](https://livada-center.by/marki/gac)
+- [Dongfeng](https://livada-center.by/marki/dongfeng)
+- [BAIC](https://livada-center.by/marki/baic)
+- [JAC](https://livada-center.by/marki/jac)
+- [FAW / Bestune](https://livada-center.by/marki/faw-bestune)
+- [Tank](https://livada-center.by/marki/tank)
+- [Maxus](https://livada-center.by/marki/maxus)
+- [Li Auto](https://livada-center.by/marki/li-auto)
+- [Zeekr](https://livada-center.by/marki/zeekr)
+- [Voyah](https://livada-center.by/marki/voyah)
+- [BYD](https://livada-center.by/marki/byd)
+- [Tesla](https://livada-center.by/marki/tesla)
+- [Avatr](https://livada-center.by/marki/avatr)
+- [AITO](https://livada-center.by/marki/aito)
+- [XPeng](https://livada-center.by/marki/xpeng)
+- [NIO](https://livada-center.by/marki/nio)
+- [Toyota](https://livada-center.by/marki/toyota)
+- [Lexus](https://livada-center.by/marki/lexus)
+- [Kia](https://livada-center.by/marki/kia)
+- [Hyundai](https://livada-center.by/marki/hyundai)
+- [Mitsubishi](https://livada-center.by/marki/mitsubishi)
+- [Nissan](https://livada-center.by/marki/nissan)
+- [Mazda](https://livada-center.by/marki/mazda)
+- [Subaru](https://livada-center.by/marki/subaru)
+- [Volkswagen](https://livada-center.by/marki/volkswagen)
+- [Skoda](https://livada-center.by/marki/skoda)
+- [BMW](https://livada-center.by/marki/bmw)
+- [Mercedes-Benz](https://livada-center.by/marki/mercedes-benz)
+- [Audi](https://livada-center.by/marki/audi)
+- [Renault](https://livada-center.by/marki/renault)
+- [Ford](https://livada-center.by/marki/ford)
+- [Peugeot](https://livada-center.by/marki/peugeot)
+- [Citroen](https://livada-center.by/marki/citroen)
+- [Fiat](https://livada-center.by/marki/fiat)
+
+## Страницы
+
+- [Главная](https://livada-center.by/)
+- [Все услуги и цены](https://livada-center.by/uslugi)
+- [Марки авто](https://livada-center.by/marki)
+- [О нас](https://livada-center.by/o-nas)
+- [Контакты](https://livada-center.by/kontakty)

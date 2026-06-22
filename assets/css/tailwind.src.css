@@ -1,0 +1,306 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #050505;
+  --bg-soft: #0a0a0a;
+  --bg-card: #111111;
+  --card: rgba(255, 255, 255, 0.035);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #ffffff;
+  --muted: #b8b8b8;
+  /* МОНОХРОМ: все акценты — белый/серый, без цвета. */
+  --brand: #ffffff;
+  --brand-2: #e5e5e5;
+  --accent: #ffffff;
+  --signal: #ffffff;
+  --neon: #ffffff; /* hover / акцент — белый */
+  --steel: #6a6a6e;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(139, 92, 255, 0.10), transparent 60%),
+      radial-gradient(900px 500px at 0% 30%, rgba(23, 139, 255, 0.06), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-feature-settings: "ss01", "cv01";
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--neon);
+    color: #fff;
+  }
+  h1, h2, h3 {
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  a {
+    -webkit-user-drag: none;
+  }
+  /* Видимый фокус для доступности (клавиатура) */
+  :focus-visible {
+    outline: 2px solid var(--neon);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     Стеклянная карточка (glass): полупрозрачная, матовая, тонкая
+     рамка. Hover → подъём + неоновое фиолетовое свечение.
+     ───────────────────────────────────────────────────────────── */
+  .glass {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Металлическая поверхность (сталь/бетон гаража) */
+  .metal {
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.015) 40%, rgba(0, 0, 0, 0.28)),
+      #111111;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 rgba(0, 0, 0, 0.45);
+  }
+
+  /* Псевдо-3D карточка: подъём + неоновое свечение при наведении */
+  .card-3d {
+    @apply glass rounded-2xl transition-all duration-300 will-change-transform;
+    transform: translateZ(0);
+  }
+  .card-3d:hover {
+    transform: translateY(-4px);
+    border-color: rgba(139, 92, 255, 0.8);
+    box-shadow: 0 0 30px rgba(139, 92, 255, 0.28);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     Кнопки. primary = белая → фиолет при hover; ghost = контур;
+     accent = жёлтый вариант. Все UPPERCASE, объёмные.
+     ───────────────────────────────────────────────────────────── */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-[10px] px-7 py-3.5 text-sm font-bold uppercase tracking-wide transition-all duration-200 select-none;
+  }
+
+  /* PRIMARY — белая кнопка, при hover становится неоново-фиолетовой */
+  .btn-primary {
+    @apply btn;
+    background: #ffffff;
+    color: #000000;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 8px 22px -10px rgba(0, 0, 0, 0.7),
+      0 2px 6px -2px rgba(0, 0, 0, 0.5);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    background: #8b5cff;
+    color: #ffffff;
+    box-shadow: 0 0 28px rgba(139, 92, 255, 0.45), 0 10px 26px -10px rgba(139, 92, 255, 0.6);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 18px rgba(139, 92, 255, 0.35);
+  }
+
+  /* ACCENT — жёлтый технический вариант */
+  .btn-accent {
+    @apply btn text-ink-950;
+    background: linear-gradient(135deg, #ffd24a, var(--accent) 48%, #d9a300);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      0 8px 22px -10px rgba(255, 196, 0, 0.55),
+      0 2px 6px -2px rgba(0, 0, 0, 0.5);
+  }
+  .btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 14px 30px -10px rgba(255, 196, 0, 0.75),
+      0 0 22px rgba(255, 196, 0, 0.4);
+  }
+  .btn-accent:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 6px rgba(120, 90, 0, 0.5);
+  }
+
+  /* GHOST — прозрачный контур, при hover неоновая рамка */
+  .btn-ghost {
+    @apply btn text-white;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+    border-color: rgba(139, 92, 255, 0.8);
+    color: #fff;
+    background: rgba(139, 92, 255, 0.08);
+    box-shadow: 0 0 22px rgba(139, 92, 255, 0.35);
+  }
+  .btn-ghost:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-steel-300;
+  }
+
+  .link-muted {
+    @apply text-steel-400 transition-colors hover:text-white;
+  }
+
+  /* Eyebrow — мини-метка над заголовком (неоновая рамка) */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-neon-500/30 bg-neon-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-neon-400;
+  }
+
+  /* Выделенное / активное состояние (для интерактивных зон) */
+  .is-selected {
+    border: 1px solid #8b5cff;
+    box-shadow: 0 0 14px rgba(139, 92, 255, 0.55), inset 0 0 18px rgba(139, 92, 255, 0.16);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     Логотипы марок авто. В покое — монохромно-белые (как иконки),
+     при наведении на карточку/бокс — проявляются в фирменном цвете.
+     ───────────────────────────────────────────────────────────── */
+  .brand-logo {
+    filter: brightness(0) invert(1);
+    opacity: 0.72;
+    transition: filter 0.25s ease, opacity 0.25s ease;
+  }
+  .group:hover .brand-logo,
+  .card-3d:hover .brand-logo {
+    filter: none;
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .perspective {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  /* Текстовый градиент (бело-неоновый) */
+  .text-gradient {
+    background: linear-gradient(120deg, #fff 8%, var(--neon) 60%, #c9b8ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Эмблема: чёрный арт → белый на тёмной теме */
+  .logo-invert {
+    filter: invert(1) brightness(2);
+  }
+
+  /* Точечная подложка */
+  .bg-dots {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Техническая сетка (blueprint-подложка) */
+  .bg-tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Появление при скролле (Reveal) */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Спотлайт в hero — мягкое неоновое пятно за курсором (--mx/--my задаёт JS) */
+  .hero-spotlight {
+    background: radial-gradient(
+      600px circle at var(--mx, 50%) var(--my, 35%),
+      rgba(139, 92, 255, 0.16),
+      rgba(139, 92, 255, 0.05) 35%,
+      transparent 60%
+    );
+    transition: background 0.25s ease-out;
+    mix-blend-mode: screen;
+  }
+
+  /* Хотспоты гаража: цвет/позиция заданы инлайн-стилями в разметке (background/box-shadow).
+     Здесь добавляем пульсирующее кольцо и плавность; transform-центрирование задаёт утилита -translate. */
+  .hotspot {
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+  }
+  .hotspot::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    opacity: 0.45;
+    animation: pulse-ring 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+  .hotspot.is-selected::after {
+    opacity: 0.9;
+  }
+
+  /* FAQ на нативном <details> */
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+/* Уважение к prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
