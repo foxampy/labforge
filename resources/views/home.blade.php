@@ -13,9 +13,10 @@
         <div class="hero__seal">
             <svg class="hero__seal-ring" viewBox="0 0 300 300" aria-hidden="true">
                 <defs>
-                    <path id="sealTop" d="M35 150 A115 115 0 0 1 265 150"/>
-                    <path id="sealBottom" d="M35 150 A115 115 0 0 0 265 150"/>
+                    <path id="sealTop" d="M40 177 A110 110 0 0 1 260 177"/>
+                    <path id="sealBottom" d="M40 150 A110 110 0 0 0 260 150"/>
                 </defs>
+                <circle class="hero__seal-disc" cx="150" cy="150" r="76"/>
                 <text class="hero__seal-word"><textPath href="#sealTop" startOffset="50%" text-anchor="middle">LEVADA</textPath></text>
                 <text class="hero__seal-word"><textPath href="#sealBottom" startOffset="50%" text-anchor="middle">SERVICE</textPath></text>
             </svg>

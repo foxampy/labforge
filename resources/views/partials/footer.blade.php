@@ -50,6 +50,16 @@
             </div>
         </div>
 
+        {{-- Охват: специализация + страны и типы двигателей (текстом — обслуживаем все, без группировки) --}}
+        @php($brandTotal = collect(\App\Support\Content::brandGroups())->sum(fn ($g) => count($g['brands'])))
+        <div class="footer-coverage">
+            <p class="footer-coverage__lead">Китайские авто · электромобили · все марки</p>
+            <div class="footer-coverage__rows">
+                <p><span>Страны</span> китайские, немецкие, европейские (Чехия, Франция, Италия), азиатские (Япония, Корея) и американские бренды — всего {{ $brandTotal }} марки.</p>
+                <p><span>Двигатели</span> электромобили, гибриды, бензиновые и дизельные (ДВС) — обслуживаем и ремонтируем любой тип.</p>
+            </div>
+        </div>
+
         <div class="footer-bottom">
             <p>&copy; {{ date('Y') }} {{ lv('legal_name') }}. Все права защищены.</p>
             <p>Автосервис в {{ lv('address.city') }} &middot; ремонт всех марок авто</p>
