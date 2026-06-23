@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /app/
-Disallow: /lead.php
-
-Sitemap: https://livada-center.by/sitemap.xml

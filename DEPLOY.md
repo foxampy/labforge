@@ -1,110 +1,125 @@
-# Деплой — LEVADA SERVICE (чистый PHP)
+# Деплой — LEVADA SERVICE (Laravel)
 
-Сайт работает на **чистом PHP 8.x** без фреймворков, без Node.js и без сборки на
-сервере. Всё, что нужно хостингу, — PHP с включённым расширением **cURL**
-(для отправки заявок в Telegram). Подходит любой shared-хостинг с cPanel/Apache.
-
-> ⚠️ **Секреты не коммитим.** Токен бота (`TELEGRAM_BOT_TOKEN`) и
-> `TELEGRAM_CHAT_ID` хранятся в `.env.local` (он в `.gitignore`) либо задаются
-> через `SetEnv`/панель хостинга. В git попадает только шаблон `.env.example`.
+Сайт переписан на **Laravel** (PHP 8.3+). Фронтенд — **Blade + обычный CSS/JS**,
+**без Node.js, npm и сборки**. База данных **не нужна**: весь контент лежит в
+конфигах и PHP-массивах, сессии и кэш — файловые.
 
 ---
 
-## Что загружать на сервер
+## 1. Требования к хостингу
 
-В `public_html` (корень домена) кладём **всё, кроме dev-инструментов**:
-
-```
-✅ ЗАГРУЖАЕМ                         ❌ НЕ ЗАГРУЖАЕМ (только для разработки)
-─────────────────────────────       ─────────────────────────────────────
-index.php          (роутер)         node_modules/      (сборка CSS)
-.htaccess                           package.json
-lead.php           (форма)          tailwind.config.ts
-app/               (логика+шаблоны)  assets/css/tailwind.src.css
-assets/css/styles.css               .dev-router.php
-assets/js/  assets/img/             src/ (удалён)
-favicon.ico                         README.md / DEPLOY.md (по желанию)
-robots.txt  llms.txt
-.env.local         (секреты, см. ниже)
-```
-
-`assets/css/styles.css` — это **уже собранный статический CSS**. Пересобирать его
-на сервере не нужно: Tailwind/Node нужны только локально, если меняешь дизайн.
+- **PHP 8.3+** с расширениями: `curl` (заявки в Telegram), `mbstring`, `openssl`,
+  `pdo`, `tokenizer`, `xml`, `ctype`, `json`, `fileinfo`.
+- **Composer** (на сервере или собрать локально и залить `vendor/`).
+- Веб-сервер (Apache/Nginx/LiteSpeed) с возможностью указать корнем папку `public/`.
+- БД и Node.js **не требуются**.
 
 ---
 
-## Шаг 1. Залить файлы
-
-Через **File Manager** в cPanel (удобно загрузить ZIP и распаковать в
-`public_html`) или по FTP/SFTP. Включи «Show Hidden Files», чтобы увидеть
-`.htaccess` и `.env.local`.
-
-Проверь, что `.htaccess` и `index.php` лежат **в корне** `public_html`.
-
-## Шаг 2. Прописать токен Telegram
-
-Любой из трёх способов (приоритет сверху вниз):
-
-**A. Файл `.env.local`** (проще всего — он уже работает локально):
-```
-TELEGRAM_BOT_TOKEN=123456789:AA...
-TELEGRAM_CHAT_ID=-1001234567890
-```
-`lead.php` читает его автоматически. Файл закрыт от веб-доступа в `.htaccess`.
-
-**B. Переменные окружения** (если хостинг позволяет) — в `.htaccess` или панели:
-```apache
-SetEnv TELEGRAM_BOT_TOKEN 123456789:AA...
-SetEnv TELEGRAM_CHAT_ID -1001234567890
-```
-
-**C. Константы прямо в `lead.php`** (если A и B недоступны) — впиши значения в
-`TELEGRAM_BOT_TOKEN_FALLBACK` / `TELEGRAM_CHAT_ID_FALLBACK` вверху файла.
-Этот файл с реальным токеном **не возвращай в git**.
-
-## Шаг 3. Проверить PHP и cURL
-
-- PHP **8.0+** (проект использует `declare(strict_types=1)` и типобезопасный код).
-- Расширение **cURL** включено (на большинстве cPanel — по умолчанию).
-  Проверка: временный `phpinfo.php` → секция **curl** → «cURL support: enabled».
-  После проверки удали `phpinfo.php`.
-- Исходящие HTTPS к `api.telegram.org` не заблокированы (редко — спроси поддержку).
-
-## Шаг 4. Проверить сайт и форму
-
-1. Открой домен — должна открыться главная, заработать меню, поиск, гараж-хотспоты.
-2. Проверь несколько URL: `/uslugi`, `/uslugi/diagnostika`, `/marki`, `/marki/bmw`,
-   `/o-nas`, `/kontakty`, `/sitemap.xml`, `/robots.txt`. Несуществующий адрес →
-   страница 404.
-3. Отправь тестовую заявку. При успехе: браузер получит `{"ok":true}`, а в Telegram
-   придёт «🚗 Новая заявка — LEVADA SERVICE».
-
-Если форма отвечает `not_configured` (500) — токен не задан (см. Шаг 2). Логи
-ошибок PHP — в cPanel → Metrics → Errors.
-
----
-
-## Локальная разработка
-
-Запуск без хостинга (нужен только PHP в PATH):
+## 2. Установка
 
 ```bash
-php -S 127.0.0.1:8000 .dev-router.php
+# 1. Зависимости (без dev-пакетов, с оптимизацией автозагрузки)
+composer install --no-dev --optimize-autoloader
+
+# 2. Окружение
+cp .env.example .env
+php artisan key:generate
 ```
 
-`.dev-router.php` повторяет логику `.htaccess`: статика отдаётся как есть,
-остальное идёт в `index.php`. Открой http://127.0.0.1:8000.
+### Заполнить `.env`
 
-### Пересборка CSS (только если меняешь дизайн)
+```dotenv
+APP_NAME="LEVADA SERVICE"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://livada-center.by
 
-CSS собирается Tailwind CLI из `assets/css/tailwind.src.css` в
-`assets/css/styles.css`. Node нужен **только для этого шага и только локально**:
+# Заявки с формы -> Telegram (см. раздел 4)
+TELEGRAM_BOT_TOKEN=123456:AA...        # токен бота от @BotFather
+TELEGRAM_CHAT_ID=-1001234567890        # id чата/канала, куда слать заявки
+```
+
+> `SESSION_DRIVER=file` и `CACHE_STORE=file` уже стоят по умолчанию — менять не нужно.
+> Строки `DB_*` можно не трогать: база не используется.
+
+### Заменить плейсхолдеры контактов
+
+Реальные телефон/мессенджеры лежат в **`config/levada.php`** — замените:
+
+```php
+'phone'      => '+375 (XX) XXX-XX-XX',
+'phone_href' => 'tel:+375XXXXXXXXX',
+'whatsapp'   => 'https://wa.me/375XXXXXXXXX',
+'telegram'   => 'https://t.me/ВашБот',
+'email'      => 'info@livada-center.by',
+```
+
+---
+
+## 3. Прод-оптимизация и запуск
 
 ```bash
-npm install            # один раз
-npm run build:css      # пересобрать styles.css (минифицировано)
-npm run watch:css      # авто-пересборка при правках шаблонов
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 ```
 
-Конфиг Tailwind (`tailwind.config.ts`) сканирует `./app/**/*.php` и `./*.php`.
-После пересборки залей обновлённый `assets/css/styles.css` на сервер.
+- **Корень сайта (docroot)** должен указывать на папку **`public/`**.
+- Папки `storage/` и `bootstrap/cache/` должны быть **доступны на запись**.
+- При смене контента/конфигов сбросьте кэш: `php artisan optimize:clear`.
+
+### Shared-хостинг / cPanel
+
+Если docroot нельзя переназначить на `public/`:
+1. Содержимое `public/` положить в `public_html/`.
+2. В `public_html/index.php` поправить пути на `require __DIR__.'/../<папка_проекта>/vendor/autoload.php'`
+   и `bootstrap/app.php` соответственно.
+3. Сам проект (всё кроме `public/`) разместить **выше** `public_html/`.
+
+### Локальная проверка
+
+```bash
+php artisan serve     # http://127.0.0.1:8000
+```
+
+---
+
+## 4. Telegram-бот (форма заявки)
+
+1. Создать бота у **@BotFather** → получить `TELEGRAM_BOT_TOKEN`.
+2. Узнать `TELEGRAM_CHAT_ID`: написать боту, затем открыть
+   `https://api.telegram.org/bot<ТОКЕН>/getUpdates` и взять `chat.id`
+   (для группы добавьте бота в группу и возьмите отрицательный id).
+3. Вписать оба значения в `.env`.
+
+Логика приёма: honeypot-антиспам → валидация имени/телефона → отправка в Telegram
+(`app/Http/Controllers/LeadController.php`). Без токенов форма корректно отвечает
+«Сервер не настроен» (HTTP 500) и пишет причину в `storage/logs`.
+
+---
+
+## 5. Где править контент
+
+| Что | Файл |
+|-----|------|
+| Контакты, адрес, режим, УТП, статистика, FAQ «О нас» | `config/levada.php` |
+| Услуги (11 шт.: тексты, цены, работы, FAQ) | `app/Data/services.php` |
+| Марки (43 шт.: тексты, неисправности, модели) | `app/Data/brands.php` |
+| Соответствие марка → файл логотипа | `app/Data/brand-logos.php` |
+| Шаблоны страниц | `resources/views/` |
+| Стили / скрипты | `public/assets/css/site.css`, `public/assets/js/site.js` |
+| Логотип, hero, favicon, OG | `public/assets/img/` |
+
+SEO/JSON-LD (`AutoRepair`, `Service`, `FAQPage`, `BreadcrumbList`, `WebSite`),
+а также `sitemap.xml`, `robots.txt`, `llms.txt` генерируются автоматически
+(`app/Support/Seo.php`, `app/Http/Controllers/SeoController.php`).
+
+---
+
+## 6. Иконки и OG-картинка (опционально, dev)
+
+`/.gen-icons.php` генерирует favicon/apple-touch/og.jpg из **оригинального**
+логотипа `public/assets/img/logo.png` (без перекраски). Требует расширение `gd`
+и шрифты Windows. Запуск: `php .gen-icons.php`. Готовые файлы уже лежат в репозитории,
+повторно запускать не нужно.

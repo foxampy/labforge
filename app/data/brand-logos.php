@@ -1,6 +1,6 @@
 <?php
-// AUTO-GENERATED manifest: brand slug => logo filename in /assets/img/brands/.
-// Regenerate after adding/removing logo files. Used by brand_logo() in app/lib/icons.php.
+// AUTO-GENERATED manifest: brand slug => logo filename in public/assets/img/brands/.
+// Regenerate after adding/removing logo files. Used by App\Support\Icons.
 return [
   'aito' => 'aito.svg',
   'audi' => 'audi.png',
