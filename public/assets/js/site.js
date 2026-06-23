@@ -12,6 +12,7 @@
   ready(function () {
     headerScroll();
     mobileNav();
+    navMega();
     faqAccordion();
     revealOnScroll();
     leadForm();
@@ -64,6 +65,46 @@
       if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
         close(); btn.focus();
       }
+    });
+  }
+
+  /* --- 2b. Мега-меню «Услуги»/«Марки»: hover на десктопе (CSS), tap на
+            мобильном + закрытие по Escape/клику вне ------------------------ */
+  function navMega() {
+    var items = document.querySelectorAll('.nav-item.has-mega');
+    if (!items.length) return;
+
+    var mq = window.matchMedia('(max-width: 880px)');
+
+    function closeAll(except) {
+      items.forEach(function (it) {
+        if (it === except) return;
+        it.classList.remove('is-open');
+        var l = it.querySelector('.nav-link');
+        if (l) l.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    items.forEach(function (item) {
+      var link = item.querySelector('.nav-link');
+      if (!link) return;
+
+      // На мобильном (выпадающее меню-«шторка») тап по пункту раскрывает
+      // каталог, а не уводит на страницу-индекс. На десктопе работает hover.
+      link.addEventListener('click', function (e) {
+        if (!mq.matches) return;
+        e.preventDefault();
+        var open = item.classList.toggle('is-open');
+        link.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) closeAll(item);
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAll(null);
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.nav-item.has-mega')) closeAll(null);
     });
   }
 

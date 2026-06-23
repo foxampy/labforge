@@ -9,9 +9,23 @@
     </div>
 
     <div class="hero__inner reveal">
-        <p class="hero__tagline">Китайские авто · электромобили · все марки</p>
-        <h1 class="hero__title">Ремонт авто в Минске <span>без переплат</span></h1>
-        <p class="hero__sub">{{ lv('description') }}</p>
+        {{-- Эмблема-печать: оригинальный логотип в центре, LEVADA по верхней дуге, SERVICE по нижней --}}
+        <div class="hero__seal">
+            <svg class="hero__seal-ring" viewBox="0 0 300 300" aria-hidden="true">
+                <defs>
+                    <path id="sealTop" d="M35 150 A115 115 0 0 1 265 150"/>
+                    <path id="sealBottom" d="M35 150 A115 115 0 0 0 265 150"/>
+                </defs>
+                <text class="hero__seal-word"><textPath href="#sealTop" startOffset="50%" text-anchor="middle">LEVADA</textPath></text>
+                <text class="hero__seal-word"><textPath href="#sealBottom" startOffset="50%" text-anchor="middle">SERVICE</textPath></text>
+            </svg>
+            <img class="hero__seal-logo" src="{{ asset('assets/img/logo.png') }}" alt="LEVADA SERVICE — автосервис в Минске" width="170" height="170" fetchpriority="high" decoding="async">
+        </div>
+
+        <h1 class="hero__footnote">
+            <span class="hero__footnote-tag">Китайские авто · электромобили · все марки</span>
+            Ремонт авто в Минске без переплат
+        </h1>
 
         <div class="hero__actions">
             <a class="btn btn-primary btn-lg" href="{{ route('contacts') }}#zayavka">Записаться на ремонт</a>
@@ -25,6 +39,8 @@
             @endforeach
         </div>
     </div>
+
+    <p class="hero__corner">{{ lv('description') }}</p>
 
     <div class="hero__scroll" aria-hidden="true">Листайте<span></span></div>
 </section>
