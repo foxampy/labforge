@@ -6,14 +6,70 @@
 <article>
     <section class="section page-head">
         <div class="container">
-            <div class="reveal" style="max-width:760px">
-                <p class="eyebrow"><span class="icon-box" style="display:inline-grid;vertical-align:middle;width:38px;height:38px;margin-right:10px">{!! svc_icon($service['slug'], 'h-5 w-5') !!}</span>Услуга</p>
-                <h1 class="heading" style="margin-top:14px">{{ $service['h1'] ?? $service['title'] }}</h1>
-                <p class="subheading">{{ $service['intro'] ?? $service['excerpt'] }}</p>
-                <div class="hero__actions" style="justify-content:flex-start;margin-top:26px">
-                    <a class="btn btn-primary btn-lg" href="{{ route('contacts') }}#zayavka">Записаться на услугу</a>
-                    <a class="btn btn-ghost btn-lg" href="{{ lv('phone_href') }}">{{ lv('phone') }}</a>
+            <div class="svc-hero @if (!empty($service['warranty'])) svc-hero--media @endif">
+                <div class="svc-hero__text reveal">
+                    <p class="eyebrow"><span class="icon-box" style="display:inline-grid;vertical-align:middle;width:38px;height:38px;margin-right:10px">{!! svc_icon($service['slug'], 'h-5 w-5') !!}</span>Услуга</p>
+                    <h1 class="heading" style="margin-top:14px">{{ $service['h1'] ?? $service['title'] }}</h1>
+                    <p class="subheading">{{ $service['intro'] ?? $service['excerpt'] }}</p>
+                    <div class="hero__actions" style="justify-content:flex-start;margin-top:26px">
+                        <a class="btn btn-primary btn-lg" href="{{ route('contacts') }}#zayavka">Записаться на услугу</a>
+                        <a class="btn btn-ghost btn-lg" href="{{ lv('phone_href') }}">{{ lv('phone') }}</a>
+                    </div>
                 </div>
+
+                @if (!empty($service['warranty']))
+                @php $w = $service['warranty']; @endphp
+                <aside class="warranty-card reveal" aria-label="Гарантийный сертификат LEVADA SERVICE">
+                    <div class="warranty-card__head">
+                        <div class="brand">
+                            <img class="brand__logo" src="{{ asset('assets/img/logo.png') }}" alt="LEVADA SERVICE" width="46" height="46" decoding="async">
+                            <span class="brand__name">LEVADA<small>SERVICE</small></span>
+                        </div>
+                        @if (!empty($w['tag']))
+                            <span class="warranty-card__tag">{{ $w['tag'] }}</span>
+                        @endif
+                    </div>
+
+                    <div class="warranty-card__lead">
+                        <span class="warranty-card__seal" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/>
+                                <path d="M9 11.6l2.1 2.1 4-4.4"/>
+                            </svg>
+                        </span>
+                        <div>
+                            @if (!empty($w['term']))
+                                <p class="warranty-card__term">{{ $w['term'] }}</p>
+                            @endif
+                            <h2 class="warranty-card__title">{{ $w['title'] }}</h2>
+                        </div>
+                    </div>
+
+                    @if (!empty($w['points']))
+                    <ul class="warranty-card__points">
+                        @foreach ($w['points'] as $pt)
+                            <li>{{ $pt }}</li>
+                        @endforeach
+                    </ul>
+                    @endif
+
+                    @if (!empty($w['rows']))
+                    <dl class="warranty-card__rows">
+                        @foreach ($w['rows'] as $r)
+                            <div class="warranty-card__row">
+                                <dt>{{ $r['label'] }}</dt>
+                                <dd class="@empty($r['value']) is-blank @endempty">{{ $r['value'] }}</dd>
+                            </div>
+                        @endforeach
+                    </dl>
+                    @endif
+
+                    <div class="warranty-card__foot">
+                        <span>Подпись и печать</span>
+                        <span class="warranty-card__no">№&nbsp;_______</span>
+                    </div>
+                </aside>
+                @endif
             </div>
         </div>
     </section>
@@ -179,7 +235,7 @@
             <div class="car-segments reveal" style="margin-top:42px">
                 @foreach ($service['segments'] as $seg)
                     <div class="car-group">
-                        <h3 class="car-group__title">{{ $seg['title'] }} <span>{{ count($seg['cars']) }}</span></h3>
+                        <h3 class="car-group__title">{{ $seg['title'] }}</h3>
                         <ul class="car-chips">
                             @foreach ($seg['cars'] as $car)
                                 <li class="car-chip">{{ $car }}</li>
@@ -188,8 +244,15 @@
                     </div>
                 @endforeach
             </div>
-            <div class="center" style="margin-top:34px">
-                <a class="btn btn-primary" href="{{ route('contacts') }}#zayavka">Записаться на антикор</a>
+            <div class="car-note reveal">
+                <div>
+                    <h3 class="car-note__title">Не нашли свою модель?</h3>
+                    <p class="car-note__text">Обрабатываем любые автомобили — от бюджетных седанов до больших внедорожников, китайских новинок и электромобилей. Оставьте заявку или позвоните: рассчитаем антикор под вашу машину и назовём стоимость после осмотра.</p>
+                </div>
+                <div class="car-note__actions">
+                    <a class="btn btn-primary btn-lg" href="{{ route('contacts') }}#zayavka">Оставить заявку</a>
+                    <a class="btn btn-ghost btn-lg" href="{{ lv('phone_href') }}">{{ lv('phone') }}</a>
+                </div>
             </div>
         </div>
     </section>
