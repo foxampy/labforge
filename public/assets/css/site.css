@@ -580,3 +580,33 @@ body.nav-open .nav-toggle span::after  { transform: translateY(-6px) rotate(-45d
   .price-row { flex-direction: column; align-items: flex-start; gap: 4px; }
   .hero__footnote { max-width: none; }
 }
+
+/* ==========================================================================
+   SERVICE DETAIL — модули услуги (способы, процесс, парк авто, статьи)
+   ========================================================================== */
+/* способы и техники — карточка с порядковым номером */
+.method-card { padding-top: 28px; }
+.method-n { font-family: var(--font-display); font-size: .92rem; letter-spacing: .14em; color: var(--muted-2); }
+.method-card .card-title { margin-top: 8px; }
+
+/* процесс в две колонки (сбрасываем вертикальный отступ .step внутри сетки) */
+.process-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 44px; }
+.process-grid .step + .step { margin-top: 0; }
+
+/* парк авто, которые обрабатываем */
+.car-group + .car-group { margin-top: 30px; }
+.car-group__title { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); text-transform: uppercase; letter-spacing: .03em; color: var(--white); font-size: 1.15rem; }
+.car-group__title span { font-size: .76rem; color: var(--muted); border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 11px; font-family: var(--font-body); }
+.car-chips { list-style: none; padding: 0; margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+.car-chip { padding: 9px 15px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-size: .92rem; transition: border-color .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease); }
+.car-chip:hover { border-color: var(--line-2); background: var(--surface-2); color: var(--white); }
+
+/* экспертные материалы */
+.article-list { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.article { background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 26px 28px; }
+.article__title { font-family: var(--font-display); text-transform: uppercase; letter-spacing: .02em; color: var(--white); font-size: 1.18rem; }
+.article p { color: var(--muted); line-height: 1.7; margin-top: 12px; }
+
+@media (max-width: 760px) {
+  .process-grid, .article-list { grid-template-columns: 1fr; }
+}

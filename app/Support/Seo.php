@@ -176,6 +176,34 @@ final class Seo
         ];
     }
 
+    /**
+     * HowTo-разметка для пошагового процесса (например, этапы услуги).
+     *
+     * @param  array<int,array{step:string,text?:string}>  $steps
+     */
+    public static function howToJsonLd(string $name, array $steps): ?array
+    {
+        if ($steps === []) {
+            return null;
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type'    => 'HowTo',
+            'name'     => $name,
+            'step'     => array_map(
+                static fn (array $s, int $i): array => [
+                    '@type'    => 'HowToStep',
+                    'position' => $i + 1,
+                    'name'     => $s['step'] ?? '',
+                    'text'     => $s['text'] ?? ($s['step'] ?? ''),
+                ],
+                $steps,
+                array_keys($steps)
+            ),
+        ];
+    }
+
     /** Абсолютный URL из относительного пути (для og/schema). */
     private static function abs(string $path): string
     {

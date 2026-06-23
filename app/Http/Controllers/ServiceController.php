@@ -57,6 +57,7 @@ class ServiceController extends Controller
             'jsonld' => [
                 Seo::serviceJsonLd($service),
                 Seo::faqJsonLd($service['faq'] ?? []),
+                Seo::howToJsonLd('Как проходит ' . mb_strtolower($service['title']), $service['process'] ?? []),
                 Seo::breadcrumbJsonLd($crumbs),
             ],
             'service' => $service,
