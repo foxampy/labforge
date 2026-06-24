@@ -119,6 +119,72 @@ final class Content
         return $groups;
     }
 
+    /**
+     * Галерея услуги — авто-скан папки public/assets/img/<slug>.
+     *
+     * Имя файла трактуется как марка/модель авто и используется для
+     * автоподстановки в форму заявки. Если имя совпадает с авто из segments —
+     * берём каноническое написание; иначе аккуратно форматируем имя файла.
+     * «Мусорные» имена (ChatGPT…, screenshot, таймстампы) — плитка без модели.
+     *
+     * @return array<int,array{src:string,car:string,generic:bool}>
+     */
+    public static function serviceGallery(string $slug): array
+    {
+        $dir = public_path('assets/img/' . $slug);
+        if (! is_dir($dir)) {
+            return [];
+        }
+
+        $files = glob($dir . '/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG,WEBP}', GLOB_BRACE) ?: [];
+        sort($files, SORT_NATURAL | SORT_FLAG_CASE);
+
+        // Каноничные названия авто из этой услуги (для точных подписей).
+        $known = [];
+        foreach ((self::findService($slug)['segments'] ?? []) as $seg) {
+            foreach (($seg['cars'] ?? []) as $car) {
+                $known[self::normalizeCar($car)] = $car;
+            }
+        }
+
+        $slides = [];
+        foreach ($files as $path) {
+            $base = pathinfo($path, PATHINFO_FILENAME);
+            $name = trim((string) preg_replace('/\s+/', ' ', (string) preg_replace('/[_\-]+/', ' ', $base)));
+
+            $generic = (bool) preg_match('/chatgpt|screenshot|untitled|^image\b|\d{2}[\s_]\d{2}[\s_]\d{2}/iu', $base);
+            $car     = $generic ? '' : ($known[self::normalizeCar($name)] ?? self::titleizeCar($name));
+
+            $slides[] = [
+                'src'     => asset('assets/img/' . $slug . '/' . rawurlencode(basename($path))),
+                'car'     => $car,
+                'generic' => $generic,
+            ];
+        }
+
+        return $slides;
+    }
+
+    /** Нормализация названия авто для сравнения (нижний регистр, один пробел). */
+    private static function normalizeCar(string $car): string
+    {
+        return mb_strtolower(trim((string) preg_replace('/\s+/', ' ', (string) preg_replace('/[_\-]+/', ' ', $car))), 'UTF-8');
+    }
+
+    /** Форматирование имени файла в подпись: «belgee x70» → «Belgee X70». */
+    private static function titleizeCar(string $name): string
+    {
+        return (string) preg_replace_callback('/[\p{L}\p{N}]+/u', static function (array $m): string {
+            $w = $m[0];
+            // коды с цифрами (x70, id4, l6) — целиком в верхний регистр
+            if (preg_match('/\p{N}/u', $w)) {
+                return mb_strtoupper($w, 'UTF-8');
+            }
+
+            return mb_strtoupper(mb_substr($w, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($w, 1, null, 'UTF-8');
+        }, $name);
+    }
+
     /** Главное меню сайта. Пункты с 'mega' раскрывают мега-панель. */
     public static function mainNav(): array
     {

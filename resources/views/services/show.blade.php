@@ -4,21 +4,70 @@
 @include('partials.crumbs')
 
 <article>
-    <section class="section page-head">
+    <section class="section page-head{{ !empty($slides) ? ' page-head--gallery' : '' }}">
         <div class="container">
-            <div class="svc-hero @if (!empty($service['warranty'])) svc-hero--media @endif">
-                <div class="svc-hero__text reveal">
-                    <p class="eyebrow"><span class="icon-box" style="display:inline-grid;vertical-align:middle;width:38px;height:38px;margin-right:10px">{!! svc_icon($service['slug'], 'h-5 w-5') !!}</span>Услуга</p>
-                    <h1 class="heading" style="margin-top:14px">{{ $service['h1'] ?? $service['title'] }}</h1>
-                    <p class="subheading">{{ $service['intro'] ?? $service['excerpt'] }}</p>
-                    <div class="hero__actions" style="justify-content:flex-start;margin-top:26px">
-                        <a class="btn btn-primary btn-lg" href="{{ route('contacts') }}#zayavka">Записаться на услугу</a>
-                        <a class="btn btn-ghost btn-lg" href="{{ lv('phone_href') }}">{{ lv('phone') }}</a>
+            @if (!empty($slides))
+                <div class="svc-hero-gallery">
+                    <div class="svc-hero-gallery__panel glass reveal">
+                        <p class="eyebrow"><span class="icon-box" style="display:inline-grid;vertical-align:middle;width:38px;height:38px;margin-right:10px">{!! svc_icon($service['slug'], 'h-5 w-5') !!}</span>Услуга</p>
+                        <h1 class="heading" style="margin-top:14px">{{ $service['h1'] ?? $service['title'] }}</h1>
+                        <p class="subheading svc-hero__desc svc-hero__desc--in">{{ $service['intro'] ?? $service['excerpt'] }}</p>
+                        <div class="hero__actions" style="justify-content:flex-start;margin-top:26px">
+                            <a class="btn btn-primary btn-lg" href="{{ route('contacts') }}#zayavka">Записаться на услугу</a>
+                            <a class="btn btn-ghost btn-lg" href="{{ lv('phone_href') }}">{{ lv('phone') }}</a>
+                        </div>
+                    </div>
+
+                    <div class="svc-hero-gallery__media">
+                        <div class="svc-slider" data-slider>
+                            <div class="svc-slider__track" data-slider-track>
+                                @foreach ($slides as $sl)
+                                    @php
+                                        $hasCar = ! $sl['generic'] && $sl['car'] !== '';
+                                        $leadParams = $hasCar ? ['service' => $service['title'], 'car' => $sl['car']] : ['service' => $service['title']];
+                                    @endphp
+                                    <a class="svc-slide" href="{{ route('contacts', $leadParams) }}#zayavka" aria-label="Записаться на антикор{{ $hasCar ? ' — ' . $sl['car'] : '' }}">
+                                        <img class="svc-slide__img" src="{{ $sl['src'] }}" alt="Антикор{{ $hasCar ? ' — ' . $sl['car'] : '' }}" loading="lazy" decoding="async">
+                                        @if ($hasCar)
+                                            <span class="svc-slide__car">{{ $sl['car'] }}</span>
+                                        @endif
+                                        <span class="svc-slide__cta">Записаться
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                                        </span>
+                                    </a>
+                                @endforeach
+                            </div>
+                            <button class="svc-slider__btn svc-slider__btn--prev" type="button" aria-label="Предыдущее фото" data-slider-prev>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                            </button>
+                            <button class="svc-slider__btn svc-slider__btn--next" type="button" aria-label="Следующее фото" data-slider-next>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="subheading svc-hero__desc svc-hero__desc--out">{{ $service['intro'] ?? $service['excerpt'] }}</p>
+                </div>
+                @else
+                <div class="svc-hero">
+                    <div class="svc-hero__text reveal">
+                        <p class="eyebrow"><span class="icon-box" style="display:inline-grid;vertical-align:middle;width:38px;height:38px;margin-right:10px">{!! svc_icon($service['slug'], 'h-5 w-5') !!}</span>Услуга</p>
+                        <h1 class="heading" style="margin-top:14px">{{ $service['h1'] ?? $service['title'] }}</h1>
+                        <p class="subheading">{{ $service['intro'] ?? $service['excerpt'] }}</p>
+                        <div class="hero__actions" style="justify-content:flex-start;margin-top:26px">
+                            <a class="btn btn-primary btn-lg" href="{{ route('contacts') }}#zayavka">Записаться на услугу</a>
+                            <a class="btn btn-ghost btn-lg" href="{{ lv('phone_href') }}">{{ lv('phone') }}</a>
+                        </div>
                     </div>
                 </div>
+                @endif
+        </div>
+    </section>
 
-                @if (!empty($service['warranty']))
-                @php $w = $service['warranty']; @endphp
+    @if (!empty($service['warranty']))
+    @php $w = $service['warranty']; @endphp
+    <section class="section warranty-section">
+        <div class="container">
+            <div class="warranty-section__grid">
                 <aside class="warranty-card reveal" aria-label="Гарантийный сертификат LEVADA SERVICE">
                     <div class="warranty-card__head">
                         <div class="brand">
@@ -64,15 +113,48 @@
                     </dl>
                     @endif
 
+                    @if (!empty($w['terms']))
+                    <div class="warranty-card__terms">
+                        <span class="warranty-card__terms-label">Срок гарантии, мес.</span>
+                        <div class="warranty-card__chips" role="group" aria-label="Срок гарантии в месяцах">
+                            @foreach ($w['terms'] as $t)
+                                <span class="warranty-chip">{{ $t }}</span>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
                     <div class="warranty-card__foot">
                         <span>Подпись и печать</span>
                         <span class="warranty-card__no">№&nbsp;_______</span>
                     </div>
                 </aside>
-                @endif
+
+                <div class="warranty-info reveal">
+                    @if (!empty($w['heading']))
+                        <h2 class="heading warranty-info__title">{{ $w['heading'] }}</h2>
+                    @endif
+                    @if (!empty($w['lead']))
+                        <p class="warranty-info__lead">{{ $w['lead'] }}</p>
+                    @endif
+                    @foreach (($w['body'] ?? []) as $para)
+                        <p class="warranty-info__text">{{ $para }}</p>
+                    @endforeach
+                    @if (!empty($w['features']))
+                    <ul class="warranty-info__features">
+                        @foreach ($w['features'] as $f)
+                            <li>{{ $f }}</li>
+                        @endforeach
+                    </ul>
+                    @endif
+                    @if (!empty($w['disclaimer']))
+                        <p class="warranty-info__note">* {{ $w['disclaimer'] }}</p>
+                    @endif
+                </div>
             </div>
         </div>
     </section>
+    @endif
 
     @if (!empty($service['works']))
     <section class="section-tight">

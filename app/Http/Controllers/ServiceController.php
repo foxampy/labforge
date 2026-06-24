@@ -63,6 +63,7 @@ class ServiceController extends Controller
             'service' => $service,
             'related' => array_slice($related, 0, 6),
             'crumbs'  => $crumbs,
+            'slides'  => Content::serviceGallery($slug),
         ]);
     }
 }

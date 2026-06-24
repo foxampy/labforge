@@ -16,6 +16,8 @@
     faqAccordion();
     revealOnScroll();
     leadForm();
+    slider();
+    prefillLead();
   });
 
   function ready(fn) {
@@ -198,5 +200,163 @@
       status.textContent = text;
       status.className = 'form-msg' + (kind ? ' is-' + kind : '');
     }
+  }
+
+  /* --- 6. Слайдер фото на странице услуги: авто-карусель + стрелки + свайп --- */
+  function slider() {
+    var roots = document.querySelectorAll('[data-slider]');
+    if (!roots.length) return;
+
+    roots.forEach(function (root) {
+      var track = root.querySelector('[data-slider-track]');
+      var prev = root.querySelector('[data-slider-prev]');
+      var next = root.querySelector('[data-slider-next]');
+      if (!track) return;
+
+      function stepSize() {
+        var slide = track.querySelector('.svc-slide');
+        if (!slide) return track.clientWidth;
+        var w = slide.getBoundingClientRect().width || slide.offsetWidth;
+        var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap);
+        if (isNaN(gap)) gap = 16;
+        return w + gap;
+      }
+
+      function scrollByStep(dir) {
+        track.scrollBy({
+          left: dir * stepSize(),
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      }
+
+      var originals = Array.prototype.slice.call(track.querySelectorAll('.svc-slide'));
+      var canAuto = !reduceMotion && originals.length > 1;
+
+      /* --- авто-режим: бесконечная медленная «карусель» --- */
+      if (canAuto) {
+        // дублируем плитки один раз — для бесшовной петли
+        originals.forEach(function (node) {
+          var clone = node.cloneNode(true);
+          clone.classList.add('is-clone');
+          clone.setAttribute('aria-hidden', 'true');
+          clone.setAttribute('tabindex', '-1');
+          track.appendChild(clone);
+        });
+        // снап мешает попиксельной анимации — выключаем на время автопрокрутки
+        track.style.scrollSnapType = 'none';
+        if (prev) prev.disabled = false;
+        if (next) next.disabled = false;
+
+        var period = 0;
+        function measure() {
+          var firstClone = track.children[originals.length];
+          period = firstClone
+            ? (firstClone.offsetLeft - track.children[0].offsetLeft)
+            : (track.scrollWidth / 2);
+        }
+        measure();
+        window.addEventListener('resize', measure, { passive: true });
+
+        var SPEED = 0.6;     // px/кадр — медленный, спокойный дрейф
+        var carry = 0;       // дробный остаток (работает и при целочисленном scrollLeft)
+        var paused = false;
+        var resumeTimer = null;
+
+        function pause() { paused = true; }
+        function resume() { paused = false; }
+        function nudgePause() {
+          paused = true;
+          clearTimeout(resumeTimer);
+          resumeTimer = setTimeout(function () { paused = false; }, 1800);
+        }
+
+        function tick() {
+          if (!paused && !document.hidden && period > 0) {
+            carry += SPEED;
+            var step = Math.floor(carry);
+            if (step >= 1) {
+              carry -= step;
+              var pos = track.scrollLeft + step;
+              if (pos >= period) pos -= period;
+              track.scrollLeft = pos;
+            }
+          }
+          requestAnimationFrame(tick);
+        }
+
+        root.addEventListener('mouseenter', pause);
+        root.addEventListener('mouseleave', resume);
+        root.addEventListener('focusin', pause);
+        root.addEventListener('focusout', resume);
+        root.addEventListener('touchstart', pause, { passive: true });
+        root.addEventListener('touchend', resume, { passive: true });
+
+        if (prev) prev.addEventListener('click', function () { scrollByStep(-1); nudgePause(); });
+        if (next) next.addEventListener('click', function () { scrollByStep(1); nudgePause(); });
+
+        requestAnimationFrame(tick);
+        return;
+      }
+
+      /* --- статичный режим (reduce-motion / одна плитка): стрелки + disabled --- */
+      function update() {
+        if (prev) prev.disabled = track.scrollLeft <= 2;
+        if (next) next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+      }
+
+      if (prev) prev.addEventListener('click', function () { scrollByStep(-1); });
+      if (next) next.addEventListener('click', function () { scrollByStep(1); });
+
+      var ticking = false;
+      track.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; update(); }); }
+      }, { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+
+      update();
+    });
+  }
+
+  /* --- 7. Префилл формы из ?service=&car= (переход с плитки слайдера) ------ */
+  function prefillLead() {
+    var form = document.getElementById('lead-form');
+    if (!form) return;
+
+    var params = new URLSearchParams(window.location.search);
+    var car = params.get('car');
+    var service = params.get('service');
+    var applied = false;
+
+    if (car) {
+      var carInput = document.getElementById('lf-car');
+      if (carInput) { carInput.value = car; applied = true; }
+    }
+
+    if (service) {
+      var select = document.getElementById('lf-service');
+      if (select) {
+        for (var i = 0; i < select.options.length; i++) {
+          if (select.options[i].value === service) {
+            select.value = service;
+            applied = true;
+            break;
+          }
+        }
+      }
+    }
+
+    if (!applied) return;
+
+    form.classList.add('is-prefilled');
+    setTimeout(function () {
+      var target = document.getElementById('zayavka');
+      if (target) {
+        target.scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth',
+          block: 'start'
+        });
+      }
+    }, 60);
+    setTimeout(function () { form.classList.remove('is-prefilled'); }, 2400);
   }
 })();
